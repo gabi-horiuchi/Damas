@@ -23,11 +23,11 @@ def loop_jogo():
     interface = Interface()
     jogo = Jogo()
     
-    rodando = True
-    while rodando:
+    run = True
+    while run:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                rodando = False
+                run = False
                 pygame.quit()
                 quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
