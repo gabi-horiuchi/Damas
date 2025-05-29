@@ -92,8 +92,8 @@ def tela_nomes(interface):
         pygame.draw.rect(interface.display, fundo_input, input_box2, border_radius=8)
         pygame.draw.rect(interface.display, cor_ativo if ativo2 else cor_inativo, input_box2, 2, border_radius=8)
 
-        txt1 = nick1 if nick1 else "Nick Player Roxo"
-        txt2 = nick2 if nick2 else "Nick Player Laranja"
+        txt1 = nick1 if nick1 else "Nick Player 1"
+        txt2 = nick2 if nick2 else "Nick Player 2"
         cor_txt1 = (255, 255, 255) if nick1 else (150, 150, 150)
         cor_txt2 = (255, 255, 255) if nick2 else (150, 150, 150)
 
