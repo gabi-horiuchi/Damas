@@ -17,16 +17,17 @@ def linha_clicada(pos):
     return 7
 
 def loop_jogo(nick1="Player 1", nick2="Player 2"):
+
     interface = Interface()
     jogo = Jogo()
-    jogo.jogador_x.nome = nick1
-    jogo.jogador_o.nome = nick2
+    jogo.jogador_o.nome = nick1
+    jogo.jogador_x.nome = nick2
 
-    run = True
-    while run:
+    sair_loop = False
+    while not sair_loop:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                sair_loop = True
                 pygame.quit()
                 quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -54,48 +55,45 @@ def tela_nomes(interface):
     fonte = pygame.font.Font(None, 36)
     ativo1 = ativo2 = False
 
-    input_box1 = pygame.Rect(250, 200, 300, 50)
-    input_box2 = pygame.Rect(250, 300, 300, 50)
+    input_box1 = pygame.Rect(200, 200, 300, 50)
+    input_box2 = pygame.Rect(200, 300, 300, 50)
 
     cor_inativo = (180, 180, 180)
     cor_ativo = (0, 255, 0)
     fundo_input = (30, 30, 30)
 
-    while True:
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
+    sair_input = False
+    while not sair_input:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-            elif evento.type == pygame.MOUSEBUTTONDOWN:
-                ativo1 = input_box1.collidepoint(evento.pos)
-                ativo2 = input_box2.collidepoint(evento.pos) and not ativo1
-            elif evento.type == pygame.KEYDOWN:
-                if evento.key == pygame.K_RETURN and nick1 and nick2:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                ativo1 = input_box1.collidepoint(event.pos)
+                ativo2 = input_box2.collidepoint(event.pos) and not ativo1
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN and nick1 and nick2:
                     return nick1, nick2
                 if ativo1:
-                    if evento.key == pygame.K_BACKSPACE:
+                    if event.key == pygame.K_BACKSPACE:
                         nick1 = nick1[:-1]
-                    elif len(nick1) < 6 and evento.unicode.isprintable():
-                        nick1 += evento.unicode
+                    elif len(nick1) < 6 and event.unicode.isprintable():
+                        nick1 += event.unicode
                 elif ativo2:
-                    if evento.key == pygame.K_BACKSPACE:
+                    if event.key == pygame.K_BACKSPACE:
                         nick2 = nick2[:-1]
-                    elif len(nick2) < 6 and evento.unicode.isprintable():
-                        nick2 += evento.unicode
-
+                    elif len(nick2) < 6 and event.unicode.isprintable():
+                        nick2 += event.unicode
 
         interface.limpar_tela()
-
-        # Estilos para caixas
         pygame.draw.rect(interface.display, fundo_input, input_box1, border_radius=8)
         pygame.draw.rect(interface.display, cor_ativo if ativo1 else cor_inativo, input_box1, 2, border_radius=8)
 
         pygame.draw.rect(interface.display, fundo_input, input_box2, border_radius=8)
         pygame.draw.rect(interface.display, cor_ativo if ativo2 else cor_inativo, input_box2, 2, border_radius=8)
 
-        # Renderizar textos
-        txt1 = nick1 if nick1 else "Nick Player 1"
-        txt2 = nick2 if nick2 else "Nick Player 2"
+        txt1 = nick1 if nick1 else "Nick Player Roxo"
+        txt2 = nick2 if nick2 else "Nick Player Laranja"
         cor_txt1 = (255, 255, 255) if nick1 else (150, 150, 150)
         cor_txt2 = (255, 255, 255) if nick2 else (150, 150, 150)
 
@@ -105,66 +103,64 @@ def tela_nomes(interface):
         interface.display.blit(surface1, (input_box1.x + 10, input_box1.y + 10))
         interface.display.blit(surface2, (input_box2.x + 10, input_box2.y + 10))
 
-        # Botão de instrução
         info = fonte.render("Pressione ENTER para começar", True, (0, 255, 0))
-        interface.display.blit(info, (250, 400))
+        interface.display.blit(info, (200, 400))
 
         info = fonte.render("Escolha seu Nick (max 6 letras)", True, (255,255,255))
-        interface.display.blit(info, (250, 100))
+        interface.display.blit(info, (200, 100))
 
         interface.atualizar_display()
         interface.tick(30)
 
-
 def regras():
     interface = Interface()
-    sair = False
+    sair_regras = False
 
-    while not sair:
+    while not sair_regras:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                sair = True
+                sair_regras = True
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    sair = True
+                    sair_regras = True
 
         interface.tela_regras()
         interface.atualizar_display()
         interface.tick(60)
 
-def tela_vencedor(vencedor, interface):
-    sair = False
+def tela_vencedor(vencedor, interface, jogo):
+    sair_vencedor = False
 
-    while not sair:
+    while not sair_vencedor:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                sair = True
+                sair_vencedor = True
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    sair = True
+                    sair_vencedor = True
 
-        interface.tela_vencedor_display(vencedor)
+        interface.tela_vencedor_display(vencedor, jogo)
         interface.atualizar_display()
         interface.tick(60)
 
-def sair():
+def encerrar_jogo():
     pygame.quit()
     quit()
 
 def menu_jogo():
     interface = Interface()
-    
+
     while True:
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 pygame.quit()
                 quit()
 
-        interface.tela_menu(lambda: iniciar_jogo_com_nomes(interface), regras, sair)
+        interface.tela_menu(lambda: iniciar_jogo_com_nomes(interface), regras, encerrar_jogo)
         interface.atualizar_display()
         interface.tick(15)
 

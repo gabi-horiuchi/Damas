@@ -27,9 +27,13 @@ class Interface:
         pygame.font.init()
         self.clock = pygame.time.Clock()
         self.logo = pygame.image.load("logo.png")
+        self.fundo_roxo = pygame.image.load("Roxo.png")
+        self.fundo_laranja = pygame.image.load("Laranja.png")
+
 
     def desenha_tabuleiro_e_pecas(self, jogo):
         """Desenha o tabuleiro e todas as peças"""
+
         # Desenhar tabuleiro
         matriz = []
         for i in range(8):
@@ -110,6 +114,7 @@ class Interface:
 
     def desenha_interface_jogo(self, jogo):
         """Desenha as informações da interface durante o jogo"""
+
         fonte = pygame.font.Font(None, 30)
         
         x = jogo.tabuleiro.contar_pecas('x')
@@ -134,13 +139,14 @@ class Interface:
                 nome = jogo.jogador_x.nome
                 cor = jogo.jogador_x.cor
 
-            surface_texto, rect_texto = self.text_objects(f"Vez de {nome}", fonte, cor)
+            surface_texto, rect_texto = self.text_objects(f"{nome} é sua vez", fonte, cor)
             rect_texto.center = (700, altura / 2)
             self.display.blit(surface_texto, rect_texto)
 
 
     def tela_menu(self,  loop_jogo, regras, sair):
         """Desenha o menu principal"""
+
         self.display.fill(PRETO)
 
         logo_rect = self.logo.get_rect(center=(largura // 2, altura // 2))
@@ -157,42 +163,53 @@ class Interface:
     
         fonte = pygame.font.SysFont('comicsansms', 20)
 
-        info1 = fonte.render('O jogo de damas é jogado em um tabuleiro de 64 casas, com 12 peças por jogador'
-        'dbdfbdgbdgbgdbdgb'
-        'dgb'
-        'gdbdgnbjdg fkb [xb' \
-        'xfb ' \
-        'df bdf b' \
-        'dg', False, BRANCO)
-        
+        info1 = fonte.render('O jogo de damas é jogado em um tabuleiro de 64 casas, com 12 peças por jogador.', False, BRANCO)
+        info2 = fonte.render('As peças movem-se na diagonal, uma casa por vez, sempre para frente.', False, BRANCO)
+        info3 = fonte.render('Ao chegar à última linha, a peça vira dama e pode andar para trás também.', False, BRANCO)
+        info4 = fonte.render('A dama se move na diagonal, para frente e para trás, por várias casas.', False, BRANCO)
+        info5 = fonte.render('Capturas são obrigatórias. A peça salta sobre a do oponente para capturá-la.', False, BRANCO)
+        info6 = fonte.render('É permitido fazer capturas múltiplas numa só jogada, se possível.', False, BRANCO)
+        info7 = fonte.render('Peças não podem pular outras da mesma cor.', False, BRANCO)
+        info8 = fonte.render('O jogo termina quando um jogador não tiver mais peças ou movimentos.', False, BRANCO)
+        game1 = fonte.render('Clique em uma peça para ver seus movimentos válidos (marcados em verde).', False, VERDE)
+        game2 = fonte.render('Se não houver destaque, é porque não há jogadas ou não é seu turno.', False, BRANCO)
         voltar = fonte.render('Pressione ESC para voltar ao menu.', False, BRANCO)
 
         self.display.blit(info1, (10, 65))
-    
+        self.display.blit(info2, (10, 90))
+        self.display.blit(info3, (10, 120))
+        self.display.blit(info4, (10, 150))
+        self.display.blit(info5, (10, 180))
+        self.display.blit(info6, (10, 210))
+        self.display.blit(info7, (10, 240))
+        self.display.blit(info8, (10, 270))
+        self.display.blit(game1, (10, 300))
+        self.display.blit(game2, (10, 330))
         self.display.blit(voltar, (10, 550))
 
    
 
     def tela_vencedor_display(self, vencedor, jogo):
-        """Exibe a tela do vencedor"""
-        self.display.fill(PRETO)
+        """Exibe a tela do vencedor com fundo temático"""
+
         fonte = pygame.font.SysFont('comicsansms', 50)
-    
+
         if vencedor == "x":
             nome = jogo.jogador_x.nome
-            surface_texto, rect_texto = self.text_objects(f"Vitória de {nome}", fonte, ROXO)
+            self.display.blit(self.fundo_roxo, (0, 0))
+            surface_texto, rect_texto = self.text_objects(f"{nome} Venceu", fonte, BRANCO)
         elif vencedor == "o":
             nome = jogo.jogador_o.nome
-            surface_texto, rect_texto = self.text_objects(f"Vitória de {nome}", fonte, LARANJA)
-
-
+            self.display.blit(self.fundo_laranja, (0, 0))
+            surface_texto, rect_texto = self.text_objects(f"{nome} Venceu", fonte, BRANCO)
 
         rect_texto.center = ((largura / 2), altura / 3)
         self.display.blit(surface_texto, rect_texto)
 
-        fonte = pygame.font.Font(None, 30)
-        voltar = fonte.render('Pressione ESC para voltar ao menu.', False, BRANCO)
+        fonte_pequena = pygame.font.Font(None, 30)
+        voltar = fonte_pequena.render('Pressione ESC para voltar ao menu.', True, BRANCO)
         self.display.blit(voltar, (25, 550))
+
 
     def text_objects(self, text, font, color):
         """Cria objetos de texto para exibição"""
