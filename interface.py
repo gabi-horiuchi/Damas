@@ -110,7 +110,7 @@ class Interface:
 
     def desenha_interface_jogo(self, jogo):
         """Desenha as informações da interface durante o jogo"""
-        fonte = pygame.font.Font(None, 20)
+        fonte = pygame.font.Font(None, 30)
         
         x = jogo.tabuleiro.contar_pecas('x')
         o = jogo.tabuleiro.contar_pecas('o')
@@ -118,33 +118,32 @@ class Interface:
         if jogo.status != 'Game Over':
 
             # Contador de peças
-            surface_texto, rect_texto = self.text_objects("Roxo: " + str(12 - o), fonte, ROXO)
-            rect_texto.center = (650, 30)
+            surface_texto, rect_texto = self.text_objects(f"{jogo.jogador_x.nome} (Roxo) {12 - o}", fonte, BRANCO)
+            rect_texto.center = (700, 30)
             self.display.blit(surface_texto, rect_texto)
 
-            surface_texto, rect_texto = self.text_objects("Laranja: " + str(12 - x), fonte, LARANJA)
-            rect_texto.center = (650, altura - 30)
+            surface_texto, rect_texto = self.text_objects(f"{jogo.jogador_o.nome} (Laranja): {12 - x}", fonte, BRANCO)
+            rect_texto.center = (700, altura - 30)
             self.display.blit(surface_texto, rect_texto)
 
             # Indicador de turno
             if jogo.turno % 2 == 1:
-                surface_texto, rect_texto = self.text_objects("Laranja é sua vez", fonte, LARANJA)
-                rect_texto.center = (700, altura / 2)
-                self.display.blit(surface_texto, rect_texto)
+                nome = jogo.jogador_o.nome
+                cor = jogo.jogador_o.cor
             else:
-                surface_texto, rect_texto = self.text_objects("Roxo é sua vez", fonte, ROXO)
-                rect_texto.center = (700, altura / 2)
-                self.display.blit(surface_texto, rect_texto)
-        else:
-            surface_texto, rect_texto = self.text_objects("Game Over", fonte, AZUL)
-            rect_texto.center = (700, altura / 3)
+                nome = jogo.jogador_x.nome
+                cor = jogo.jogador_x.cor
+
+            surface_texto, rect_texto = self.text_objects(f"Vez de {nome}", fonte, cor)
+            rect_texto.center = (700, altura / 2)
             self.display.blit(surface_texto, rect_texto)
+
 
     def tela_menu(self,  loop_jogo, regras, sair):
         """Desenha o menu principal"""
         self.display.fill(PRETO)
 
-        logo_rect = self.logo.get_rect(center=(largura // 2, altura // 4))
+        logo_rect = self.logo.get_rect(center=(largura // 2, altura // 2))
         self.display.blit(self.logo, logo_rect)
         
 
@@ -158,44 +157,35 @@ class Interface:
     
         fonte = pygame.font.SysFont('comicsansms', 20)
 
-        info1 = fonte.render('O jogo de damas é jogado em um tabuleiro de 64 casas, com 12 peças por jogador.', False, BRANCO)
-        info2 = fonte.render('As peças movem-se na diagonal, uma casa por vez, sempre para frente.', False, BRANCO)
-        info3 = fonte.render('Ao chegar à última linha, a peça vira dama e pode andar para trás também.', False, BRANCO)
-        info4 = fonte.render('A dama se move na diagonal, para frente e para trás, por várias casas.', False, BRANCO)
-        info5 = fonte.render('Capturas são obrigatórias. A peça salta sobre a do oponente para capturá-la.', False, BRANCO)
-        info6 = fonte.render('É permitido fazer capturas múltiplas numa só jogada, se possível.', False, BRANCO)
-        info7 = fonte.render('Peças não podem pular outras da mesma cor.', False, BRANCO)
-        info8 = fonte.render('O jogo termina quando um jogador não tiver mais peças ou movimentos.', False, BRANCO)
-        game1 = fonte.render('Clique em uma peça para ver seus movimentos válidos (marcados em verde).', False, VERDE)
-        game2 = fonte.render('Se não houver destaque, é porque não há jogadas ou não é seu turno.', False, BRANCO)
+        info1 = fonte.render('O jogo de damas é jogado em um tabuleiro de 64 casas, com 12 peças por jogador'
+        'dbdfbdgbdgbgdbdgb'
+        'dgb'
+        'gdbdgnbjdg fkb [xb' \
+        'xfb ' \
+        'df bdf b' \
+        'dg', False, BRANCO)
+        
         voltar = fonte.render('Pressione ESC para voltar ao menu.', False, BRANCO)
 
         self.display.blit(info1, (10, 65))
-        self.display.blit(info2, (10, 90))
-        self.display.blit(info3, (10, 120))
-        self.display.blit(info4, (10, 150))
-        self.display.blit(info5, (10, 180))
-        self.display.blit(info6, (10, 210))
-        self.display.blit(info7, (10, 240))
-        self.display.blit(info8, (10, 270))
-        self.display.blit(game1, (10, 300))
-        self.display.blit(game2, (10, 330))
+    
         self.display.blit(voltar, (10, 550))
 
+   
 
-    def tela_vencedor_display(self, vencedor):
+    def tela_vencedor_display(self, vencedor, jogo):
         """Exibe a tela do vencedor"""
         self.display.fill(PRETO)
         fonte = pygame.font.SysFont('comicsansms', 50)
-
-        surface_texto, rect_texto = None, None
-
-        if vencedor == "Empate":
-            surface_texto, rect_texto = self.text_objects("EMPATE!", fonte, BRANCO)
-        elif vencedor == "x":
-            surface_texto, rect_texto = self.text_objects("VITORIA DO ROXO", fonte, ROXO)
+    
+        if vencedor == "x":
+            nome = jogo.jogador_x.nome
+            surface_texto, rect_texto = self.text_objects(f"Vitória de {nome}", fonte, ROXO)
         elif vencedor == "o":
-            surface_texto, rect_texto = self.text_objects("VITORIA DO LARANJA", fonte, LARANJA)
+            nome = jogo.jogador_o.nome
+            surface_texto, rect_texto = self.text_objects(f"Vitória de {nome}", fonte, LARANJA)
+
+
 
         rect_texto.center = ((largura / 2), altura / 3)
         self.display.blit(surface_texto, rect_texto)
