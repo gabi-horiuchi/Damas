@@ -211,6 +211,70 @@ class Interface:
         self.display.blit(voltar, (25, 550))
 
 
+
+    def tela_nomes(interface):
+        nick1 = ""
+        nick2 = ""
+        fonte = pygame.font.Font(None, 36)
+        ativo1 = ativo2 = False
+
+        input_box1 = pygame.Rect(200, 200, 300, 50)
+        input_box2 = pygame.Rect(200, 300, 300, 50)
+
+        cor_inativo = (180, 180, 180)
+        cor_ativo = (0, 255, 0)
+        fundo_input = (30, 30, 30)
+
+        sair_input = False
+        while not sair_input:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    ativo1 = input_box1.collidepoint(event.pos)
+                    ativo2 = input_box2.collidepoint(event.pos) and not ativo1
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN and nick1 and nick2:
+                        return nick1, nick2
+                    if ativo1:
+                        if event.key == pygame.K_BACKSPACE:
+                            nick1 = nick1[:-1]
+                        elif len(nick1) < 6 and event.unicode.isprintable():
+                            nick1 += event.unicode
+                    elif ativo2:
+                        if event.key == pygame.K_BACKSPACE:
+                            nick2 = nick2[:-1]
+                        elif len(nick2) < 6 and event.unicode.isprintable():
+                            nick2 += event.unicode
+
+            interface.limpar_tela()
+            pygame.draw.rect(interface.display, fundo_input, input_box1, border_radius=8)
+            pygame.draw.rect(interface.display, cor_ativo if ativo1 else cor_inativo, input_box1, 2, border_radius=8)
+
+            pygame.draw.rect(interface.display, fundo_input, input_box2, border_radius=8)
+            pygame.draw.rect(interface.display, cor_ativo if ativo2 else cor_inativo, input_box2, 2, border_radius=8)
+
+            txt1 = nick1 if nick1 else "Nick Player 1"
+            txt2 = nick2 if nick2 else "Nick Player 2"
+            cor_txt1 = (255, 255, 255) if nick1 else (150, 150, 150)
+            cor_txt2 = (255, 255, 255) if nick2 else (150, 150, 150)
+
+            surface1 = fonte.render(txt1, True, cor_txt1)
+            surface2 = fonte.render(txt2, True, cor_txt2)
+
+            interface.display.blit(surface1, (input_box1.x + 10, input_box1.y + 10))
+            interface.display.blit(surface2, (input_box2.x + 10, input_box2.y + 10))
+
+            info = fonte.render("Pressione ENTER para começar", True, (0, 255, 0))
+            interface.display.blit(info, (200, 400))
+
+            info = fonte.render("Escolha seu Nick (max 6 letras)", True, (255,255,255))
+            interface.display.blit(info, (200, 100))
+
+            interface.atualizar_display()
+            interface.tick(30)
+
     def text_objects(self, text, font, color):
         """Cria objetos de texto para exibição"""
         textSurface = font.render(text, True, color)
